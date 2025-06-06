@@ -3,17 +3,14 @@ import zmq
 import numpy as np
 from typing import Dict, Any
 
-from lerobot.common.policies.pretrained import PreTrainedPolicy
-from lerobot.common.robots import Robot
 from .config import RemoteInferenceConfig
 
 logger = logging.getLogger(__name__)
 
-class RemoteInferenceClient(PreTrainedPolicy):
+class RemoteInferenceClient:
     """Client that sends observations to remote server for inference."""
     
     def __init__(self, config: RemoteInferenceConfig):
-        super().__init__(config.policy_config)
         self.config = config
         
         # Initialize ZMQ client
@@ -27,7 +24,7 @@ class RemoteInferenceClient(PreTrainedPolicy):
         # Store robot type for server side
         self.robot_type = config.robot_config.type if config.robot_config else None
         
-    def forward(self, observation: Dict[str, Any]) -> np.ndarray:
+    def __call__(self, observation: Dict[str, Any]) -> np.ndarray:
         """Forward observation to remote server and get action."""
         # Convert numpy arrays to lists for JSON serialization
         obs_serializable = {k: v.tolist() if isinstance(v, np.ndarray) else v for k,v in observation.items()}
@@ -51,16 +48,10 @@ class RemoteInferenceClient(PreTrainedPolicy):
                 
         except zmq.error.Again:
             logger.error("Timeout waiting for server response")
+            return np.zeros((7,))  # Default action size for SO100 robot
         except Exception as e:
             logger.error(f"Error during inference: {e}")
-        # Fallback: return zeros of action shape based on policy config
-        # Use first output feature shape
-        try:
-            feat = next(iter(self.config.policy_config.output_features.values()))
-            return np.zeros(feat.shape)
-        except Exception:
-            # Default to empty array if unable to infer shape
-            return np.zeros((0,))
+            return np.zeros((7,))  # Default action size for SO100 robot
             
     def close(self):
         """Close connection to server."""

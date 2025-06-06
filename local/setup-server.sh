@@ -3,9 +3,9 @@ set -euo pipefail
 
 # -------------- User configuration --------------
 VENV_DIR=".venv"                    # Python virtual environment directory
-HF_MODEL="sengi/pi0fast-so100"     # HF Hub model ID or local path
+HF_MODEL="pi0fast-so100"     # HF Hub model ID or local path
 SERVER_HOST="0.0.0.0"              # server bind address
-SERVER_PORT=5555                    # server port
+SERVER_PORT=12278                    # server port
 # -----------------------------------------------
 
 # 1. Check Python version
