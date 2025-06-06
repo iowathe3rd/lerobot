@@ -12,9 +12,17 @@ SERVER_PORT=5555                     # server port
 CONDA_DIR="$HOME/miniconda3"
 if [ ! -d "$CONDA_DIR" ]; then
   echo "Installing Miniconda..."
-  curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -o miniconda.sh
-  bash miniconda.sh -b -p "$CONDA_DIR"
-  rm miniconda.sh
+  # Download installer and checksum
+  INSTALLER="Miniconda3-latest-Linux-x86_64.sh"
+  BASE_URL="https://repo.anaconda.com/miniconda"
+  wget "$BASE_URL/$INSTALLER" -O "$INSTALLER"
+  wget "$BASE_URL/$INSTALLER.sha256" -O "$INSTALLER.sha256"
+  # Verify SHA256 checksum
+  echo "Verifying installer integrity..."
+  sha256sum -c "$INSTALLER.sha256"
+  # Run silent install
+  bash "$INSTALLER" -b -p "$CONDA_DIR"
+  rm "$INSTALLER" "$INSTALLER.sha256"
 fi
 
 # 2. Initialize conda
