@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from typing import Optional
-import draccus
 
 from lerobot.common.robots.config import RobotConfig
 from lerobot.configs.policies import PreTrainedConfig

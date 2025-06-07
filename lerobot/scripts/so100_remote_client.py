@@ -9,14 +9,8 @@ Sc    robot_config = SO100FollowerConfig(
         use_degrees=True, start the SO100 remote inference client with camera support.
 """
 import logging
-import time
-from pathlib import Path
-
-import draccus
 from lerobot.remote.client import RemoteInferenceClient
 from lerobot.remote.config import RemoteInferenceConfig
-from lerobot.configs.policies import PreTrainedConfig
-from lerobot.common.robots.config import RobotConfig
 from lerobot.common.robots.utils import make_robot_from_config
 from lerobot.common.robots.so100_follower import SO100FollowerConfig
 
