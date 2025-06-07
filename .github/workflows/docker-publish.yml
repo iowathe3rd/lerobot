@@ -1,0 +1,27 @@
+name: Build & Publish Docker Images
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-qemu-action@v2
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build & Push GPU Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: docker/lerobot-gpu/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/lerobot-gpu:latest
+            ghcr.io/${{ github.repository_owner }}/lerobot-gpu:${{ github.sha }}

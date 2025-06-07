@@ -37,7 +37,15 @@ def main():
         id="my_awesome_follower_arm",
         port="/dev/tty.usbmodem59700721761",
         disable_torque_on_disconnect=True,
-        max_relative_target=100,
+        # Define safe movement limits for each motor
+        max_relative_target={
+            "shoulder_pan": 20.0,
+            "shoulder_lift": 20.0,
+            "elbow_flex": 20.0,
+            "wrist_flex": 20.0,
+            "wrist_roll": 30.0,
+            "gripper": 50.0
+        },
         use_degrees=True,
         # Define cameras
         cameras={
@@ -83,7 +91,6 @@ def main():
     try:
         logging.info("Starting control loop...")
         while True:
-            loop_start = time.perf_counter()
             
             # Get robot observation (includes all camera frames)
             obs = robot.get_observation()
