@@ -1,13 +1,14 @@
 # Docker image for GPU-based LeRobot inference on RunPod
 FROM nvidia/cuda:12.4.1-base-ubuntu22.04
 
+# Python version for venv
 ARG PYTHON_VERSION=3.10
-ARG HF_MODEL=sengi/pi0fast-so100
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PATH="/opt/venv/bin:$PATH" \
     MUJOCO_GL="egl" \
-    HF_MODEL="$HF_MODEL"
+    # Model to load, override at runtime via -e HF_MODEL
+    HF_MODEL="sengi/pi0fast-so100"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake git curl wget \
