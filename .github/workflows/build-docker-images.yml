@@ -63,7 +63,9 @@ jobs:
           file: ./docker/lerobot-cpu/Dockerfile
           push: true
           tags: huggingface/lerobot-cpu
-          build-args: PYTHON_VERSION=${{ env.PYTHON_VERSION }}
+          build-args: |
+            PYTHON_VERSION=${{ env.PYTHON_VERSION }}
+            HF_TOKEN=${{ secrets.HF_TOKEN }}
 
 
   latest-cuda:
@@ -101,7 +103,9 @@ jobs:
           file: ./docker/lerobot-gpu/Dockerfile
           push: true
           tags: huggingface/lerobot-gpu
-          build-args: PYTHON_VERSION=${{ env.PYTHON_VERSION }}
+          build-args: |
+            PYTHON_VERSION=${{ env.PYTHON_VERSION }}
+            HF_TOKEN=${{ secrets.HF_TOKEN }}
 
 
   latest-cuda-dev:
@@ -132,4 +136,6 @@ jobs:
           file: ./docker/lerobot-gpu-dev/Dockerfile
           push: true
           tags: huggingface/lerobot-gpu:dev
-          build-args: PYTHON_VERSION=${{ env.PYTHON_VERSION }}
+          build-args: |
+            PYTHON_VERSION=${{ env.PYTHON_VERSION }}
+            HF_TOKEN=${{ secrets.HF_TOKEN }}
