@@ -151,15 +151,28 @@ class OpenCVCamera(Camera):
         if self.is_connected:
             raise DeviceAlreadyConnectedError(f"{self} is already connected.")
 
-        # Use 1 thread for OpenCV operations to avoid potential conflicts or
-        # blocking in multi-threaded applications, especially during data collection.
+        # Use 1 thread for OpenCV operations to avoid conflicts or
+        # blocking in multi-threaded applications.
         cv2.setNumThreads(1)
 
-        self.videocapture = cv2.VideoCapture(self.index_or_path, self.backend)
+        # Try multiple backends to find the camera
+        backends_to_try = [self.backend]
+        if platform.system() == "Windows":
+            # Add Media Foundation and AUTO backends as fallbacks
+            for b in (cv2.CAP_MSMF, cv2.CAP_ANY):
+                if b not in backends_to_try:
+                    backends_to_try.append(b)
 
-        if not self.videocapture.isOpened():
-            self.videocapture.release()
-            self.videocapture = None
+        self.videocapture = None
+        for backend in backends_to_try:
+            cap = cv2.VideoCapture(self.index_or_path, backend)
+            if cap.isOpened():
+                logger.info(f"{self}: opened with backend {backend}")
+                self.videocapture = cap
+                break
+            cap.release()
+
+        if not self.videocapture or not self.videocapture.isOpened():
             raise ConnectionError(
                 f"Failed to open {self}."
                 f"Run `python -m lerobot.find_cameras opencv` to find available cameras."

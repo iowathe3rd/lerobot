@@ -17,7 +17,6 @@
 import platform
 from pathlib import Path
 from typing import TypeAlias
-
 from .camera import Camera
 from .configs import CameraConfig, Cv2Rotation
 
@@ -59,7 +58,7 @@ def get_cv2_rotation(rotation: Cv2Rotation) -> int | None:
 def get_cv2_backend() -> int:
     import cv2
 
-    if platform.system() == "Windows":
-        return cv2.CAP_AVFOUNDATION
+    if platform.system() == "Windows":    
+        return cv2.CAP_DSHOW
     else:
         return cv2.CAP_ANY
